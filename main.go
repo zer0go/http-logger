@@ -26,7 +26,7 @@ func main() {
 			c.Set(key, data, cache.NoExpiration)
 		}
 
-		fmt.Printf("%s", data)
+		fmt.Printf("%s\n", data)
 	})
 
 	mux.HandleFunc("/readAll", func(writer http.ResponseWriter, request *http.Request) {
