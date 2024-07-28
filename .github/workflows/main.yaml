@@ -3,7 +3,7 @@ name: CI
 on: push
 
 env:
-  BINARY_NAME: example
+  BINARY_NAME: http-logger
   GO_VERSION: 1.22
 
 jobs:
