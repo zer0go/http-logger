@@ -17,13 +17,13 @@ var Version = "development"
 const LogFormat = "%s | %s\n"
 
 func main() {
-	cacheEnabled := os.Getenv("ENABLE_CACHE") == "1"
+	preserveLogEnabled := os.Getenv("PRESERVE_LOG_ENABLED") == "1"
 
 	c := cache.New(60*time.Minute, 120*time.Minute)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/write", func(writer http.ResponseWriter, request *http.Request) {
 		data, _ := io.ReadAll(request.Body)
-		if cacheEnabled {
+		if preserveLogEnabled {
 			key := fmt.Sprintf("%v-%-4v", time.Now().UnixNano(), rand.IntN(9999))
 			c.Set(key, data, cache.NoExpiration)
 		}
@@ -32,7 +32,7 @@ func main() {
 	})
 
 	mux.HandleFunc("/readAll", func(writer http.ResponseWriter, request *http.Request) {
-		if !cacheEnabled {
+		if !preserveLogEnabled {
 			writer.WriteHeader(http.StatusNotFound)
 			return
 		}
