@@ -7,6 +7,8 @@ import (
 	"math/rand/v2"
 	"net/http"
 	"os"
+	"slices"
+	"sort"
 	"time"
 )
 
@@ -32,11 +34,19 @@ func main() {
 	mux.HandleFunc("/readAll", func(writer http.ResponseWriter, request *http.Request) {
 		if !cacheEnabled {
 			writer.WriteHeader(http.StatusNotFound)
+			return
 		}
 
 		items := c.Items()
-		for key, item := range items {
-			_, _ = fmt.Fprintf(writer, LogFormat, key, item.Object)
+		keys := make([]string, 0)
+		for k := range items {
+			keys = append(keys, k)
+		}
+		slices.Sort(keys)
+		sort.Strings(keys)
+
+		for _, k := range keys {
+			_, _ = fmt.Fprintf(writer, LogFormat, k, items[k].Object)
 		}
 	})
 
